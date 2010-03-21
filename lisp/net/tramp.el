@@ -176,6 +176,7 @@
 (defgroup tramp nil
   "Edit remote files with a combination of rsh and rcp or similar programs."
   :group 'files
+  :group 'comm
   :version "22.1")
 
 ;; Maybe we need once a real Tramp mode, with key bindings etc.
@@ -3798,13 +3799,12 @@ The method used must be an out-of-band method."
 
 	  ;; Both are Tramp files.  We shall optimize it, when the
 	  ;; methods for filename and newname are the same.
-	  (let ((tmpfile
-		 (if (file-regular-p filename)
-		     (tramp-compat-make-temp-file localname)
-		   (make-temp-name
-		    (expand-file-name
-		     tramp-temp-name-prefix
-		     (tramp-compat-temporary-file-directory))))))
+	  (let* ((dir-flag (file-directory-p filename))
+		 (tmpfile (tramp-compat-make-temp-file localname dir-flag)))
+	    (if dir-flag
+		(setq tmpfile
+		      (expand-file-name
+		       (file-name-nondirectory newname) tmpfile)))
 	    (unwind-protect
 		(progn
 		  (tramp-do-copy-or-rename-file-out-of-band
@@ -3813,9 +3813,10 @@ The method used must be an out-of-band method."
 		   'rename tmpfile newname keep-date))
 	      ;; Save exit.
 	      (condition-case nil
-		  (if (file-regular-p tmpfile)
-		      (delete-file tmpfile)
-		    (delete-directory tmpfile 'recursive))
+		  (if dir-flag
+		      (delete-directory
+		       (expand-file-name ".." tmpfile) 'recursive)
+		    (delete-file tmpfile))
 		(error))))
 
 	;; Expand hops.  Might be necessary for gateway methods.
@@ -5045,11 +5046,12 @@ Returns a file name in `tramp-auto-save-directory' for autosaving this file."
 	  ;; encoding function, then that is used for encoding the
 	  ;; contents of the tmp file.
 	  (cond
-	   ;; `rename-file' handles direct copy and out-of-band methods.
+	   ;; `copy-file' handles direct copy and out-of-band methods.
 	   ((or (tramp-local-host-p v)
 		(tramp-method-out-of-band-p
-		 v (- (or end (point-max)) (or start (point-min)))))
-	    (if (and (= (or end (point-max)) (point-max))
+		 v (nth 7 (file-attributes tmpfile))))
+	    (if (and (not (stringp start))
+		     (= (or end (point-max)) (point-max))
 		     (= (or start (point-min)) (point-min))
 		     (tramp-get-method-parameter
 		      method 'tramp-copy-keep-tmpfile))

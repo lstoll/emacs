@@ -2591,7 +2591,7 @@ comment at the start of cc-engine.el for more info."
   (save-restriction
     (narrow-to-region 1 (point-max))
     (save-excursion
-      (let* ((in-macro-start   ; point-max or beginning of macro containing it
+      (let* ((in-macro-start   ; start of macro containing (point-max) or nil.
 	      (save-excursion
 		(goto-char (point-max))
 		(and (c-beginning-of-macro)
@@ -2641,7 +2641,9 @@ comment at the start of cc-engine.el for more info."
 	;; (car c-state-cache).  There can be no open parens/braces/brackets
 	;; between `good-pos'/`good-pos-actual-macro-start' and (point-max),
 	;; due to the interface spec to this function.
-	(setq pos (if good-pos-actual-macro-end
+	(setq pos (if (and good-pos-actual-macro-end
+			   (not (eq good-pos-actual-macro-start
+				    in-macro-start)))
 		      (1+ good-pos-actual-macro-end) ; get outside the macro as
 					; marked by a `category' text property.
 		    good-pos))
@@ -4929,8 +4931,8 @@ comment at the start of cc-engine.el for more info."
 	(c-go-list-forward))
       (when (equal (c-get-char-property (1- (point)) 'syntax-table)
 		   c->-as-paren-syntax) ; should always be true.
-	(c-clear-char-property (1- (point)) 'syntax-table))
-      (c-clear-char-property pos 'syntax-table))))
+	(c-clear-char-property (1- (point)) 'category))
+      (c-clear-char-property pos 'category))))
 
 (defun c-clear->-pair-props (&optional pos)
   ;; POS (default point) is at a > character.  If it is marked with
@@ -4946,8 +4948,8 @@ comment at the start of cc-engine.el for more info."
 	(c-go-up-list-backward))
       (when (equal (c-get-char-property (point) 'syntax-table)
 			c-<-as-paren-syntax) ; should always be true.
-	(c-clear-char-property (point) 'syntax-table))
-      (c-clear-char-property pos 'syntax-table))))
+	(c-clear-char-property (point) 'category))
+      (c-clear-char-property pos 'category))))
 
 (defun c-clear-<>-pair-props (&optional pos)
   ;; POS (default point) is at a < or > character.  If it has an

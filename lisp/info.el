@@ -3062,7 +3062,9 @@ Give an empty topic name to go to the Index node itself."
 	  num (1- num)))
   (Info-goto-node (nth 1 (car Info-index-alternatives)))
   (if (> (nth 3 (car Info-index-alternatives)) 0)
-      (forward-line (1- (nth 3 (car Info-index-alternatives))))
+      ;; Forward 2 lines less because `Info-find-node-2' initially
+      ;; puts point to the 2nd line.
+      (forward-line (- (nth 3 (car Info-index-alternatives)) 2))
     (forward-line 3)			; don't search in headers
     (let ((name (car (car Info-index-alternatives))))
       (Info-find-index-name name)))
@@ -3341,6 +3343,7 @@ Build a menu of the possible matches."
 (defvar finder-known-keywords)
 (defvar finder-package-info)
 (declare-function find-library-name "find-func" (library))
+(declare-function finder-unknown-keywords "finder" ())
 (declare-function lm-commentary "lisp-mnt" (&optional file))
 
 (defun Info-finder-find-node (filename nodename &optional no-going-back)
@@ -3359,7 +3362,21 @@ Build a menu of the possible matches."
 	 (insert (format "* %-14s %s.\n"
 			 (concat (symbol-name keyword) "::")
 			 (cdr assoc)))))
-     finder-known-keywords))
+     (cons '(unknown . "unknown keywords")
+	   finder-known-keywords)))
+   ((equal nodename "unknown")
+    ;; Display unknown keywords
+    (insert (format "\n\^_\nFile: %s,  Node: %s,  Up: Top\n\n"
+		    Info-finder-file nodename))
+    (insert "Finder Unknown Keywords\n")
+    (insert "***********************\n\n")
+    (insert "* Menu:\n\n")
+    (mapc
+     (lambda (assoc)
+       (insert (format "* %-14s %s.\n"
+		       (concat (symbol-name (car assoc)) "::")
+		       (cdr assoc))))
+     (finder-unknown-keywords)))
    ((string-match-p "\\.el\\'" nodename)
     ;; Display commentary section
     (insert (format "\n\^_\nFile: %s,  Node: %s,  Up: Top\n\n"

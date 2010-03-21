@@ -1,3 +1,480 @@
+2010-03-20  Teodor Zlatanov  <tzz@lifelogs.com>
+
+	* net/secrets.el: Fix parenthesis.
+	(secrets-enabled): Fix parenthesis.
+
+2010-03-20  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	Use more relative file and directory names.
+	* Makefile.in (EMACS): Arrange for it to work when we chdir.
+	(setwins, setwins_almost, setwins_for_subdirs):
+	Don't `cd'; output relative names.
+	(all, compile, compile-always, compile-last): Set emacswd.
+	(custom-deps, finder-data, autoloads, update-subdirs, compile-last):
+	Just cd to the lisp source dir so we can use relative file names.
+
+	* outline.el (hide-sublevels): Unfix the paren non-typo! (bug#5738).
+
+2010-03-20  Glenn Morris  <rgm@gnu.org>
+
+	* textmodes/rst.el: Use faces for font-lock customization, and make the
+	old -face variables obsolete.
+	(rst-block, rst-external, rst-definition, rst-directive, rst-comment)
+	(rst-emphasis1, rst-emphasis2, rst-literal, rst-reference): New faces.
+	(rst-block-face, rst-external-face, rst-definition-face)
+	(rst-directive-face, rst-comment-face, rst-emphasis1-face)
+	(rst-emphasis2-face, rst-literal-face, rst-reference-face):
+	Make obsolete.
+	(rst-font-lock-keywords-function): Update for above changes.
+
+2010-03-20  Juri Linkov  <juri@jurta.org>
+
+	* s-region.el:
+	* obsolete/s-region.el: Move to obsolete.
+
+2010-03-19  Juanma Barranquero  <lekktu@gmail.com>
+
+	* vc-dispatcher.el (vc-do-command): Remove reference to `vc-path'.
+
+2010-03-19  Dan Nicolaescu  <dann@ics.uci.edu>
+
+	* vc-hooks.el (vc-path): Remove variable and obsolete declaration.
+
+2010-03-19  Dan Nicolaescu  <dann@ics.uci.edu>
+
+	Add special markup processing for commit logs.
+	* log-edit.el (log-edit-extra-flags): New variable.
+	(log-edit): Add new argument MODE.  Use that mode when non-nil
+	instead of the log-view-mode.
+	(log-view-process-buffer): New function.
+
+	* vc.el: Document that the checkin method takes optional
+	arguments.  Document new backend specific method: log-view-mode.
+	(vc-default-log-edit-mode): New function.
+	(vc-checkin): Use a backend specific log-view-mode.
+	Pass extra arguments to the checkin method.
+	(vc-modify-change-comment): Pass a dummy extra argument.
+
+	* vc-dispatcher.el (vc-log-edit): Add a mode argument, pass it to
+	log-edit.
+	(vc-start-logentry): Add a mode argument, pass it to vc-log-edit.
+	(vc-finish-logentry): Process the log buffer before passing it
+	down.  Pass log-edit-extra-flags.
+
+	* vc-bzr.el (vc-bzr-checkin): Pass extra arguments to the commit
+	command.
+	(log-edit-extra-flags, log-edit-before-checkin-process): New declarations.
+
+	* vc-hg.el (vc-hg-checkin): Pass extra arguments to the commit
+	command.
+	(log-edit-extra-flags, log-edit-before-checkin-process): New declarations.
+	(vc-hg-log-edit-mode): New derived mode.
+
+	* vc-arch.el (vc-arch-checkin):
+	* vc-cvs.el (vc-cvs-checkin):
+	* vc-git.el (vc-git-checkin):
+	* vc-mtn.el (vc-mtn-checkin):
+	* vc-rcs.el (vc-rcs-checkin):
+	* vc-sccs.el (vc-sccs-checkin):
+	* vc-svn.el (vc-svn-checkin): Add an optional ignored argument.
+
+2010-03-19  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	* outline.el (hide-sublevels): Don't hide trailing newline (and fix
+	parent typo).
+
+2010-03-19  Glenn Morris  <rgm@gnu.org>
+
+	* password-cache.el (password-cache, password-cache-expiry): Autoload.
+
+2010-03-18  Glenn Morris  <rgm@gnu.org>
+
+	* emacs-lisp/autoload.el (autoload-rubric): Doc fix.
+
+	* replace.el (query-replace-history): Give it a doc string.
+	(map-query-replace-regexp): Use query-replace-from-history-variable
+	and query-replace-to-history-variable.
+
+	* mail/hashcash.el (declare-function): Remove duplicate definition.
+
+	* mail/emacsbug.el (report-emacs-bug-pretest-address):
+	Make it an obsolete alias for report-emacs-bug-address.
+	(message-strip-special-text-properties): Declare.
+	(report-emacs-bug): Remove test for a pretest bug address.
+	Combine message-mode-specific code.
+
+	* mail/supercite.el: Don't require sendmail.
+	(mh-in-header-p): Declare rather than using with-no-warnings.
+	(sc-no-blank-line-or-header): Use rfc822-goto-eoh rather than
+	mail-header-end.  Don't bind mysterious variable `kill-lines-magic'.
+
+	* calendar/cal-french.el: Convert to utf-8.
+
+	* files.el (interpreter-mode-alist): Use emacs-lisp-mode for
+	Emacs scripts.
+
+2010-03-16  Michael Albinus  <michael.albinus@gmx.de>
+
+	* net/secrets.el (secrets-enabled): New variable.  Use it instead
+	of a subfeature.
+
+2010-03-15  Michael Albinus  <michael.albinus@gmx.de>
+
+	* net/secrets.el (top): Register the D-Bus signals only when the
+	service "org.freedesktop.secrets" can be pinged.
+	Provide subfeature `enabled'.
+
+2010-03-14  Juri Linkov  <juri@jurta.org>
+
+	Add finder unknown keywords.
+
+	* finder.el (finder-unknown-keywords): New function.
+
+	* info.el (Info-finder-find-node): Use `finder-unknown-keywords'
+	to create a Finder node with unknown keywords.
+
+2010-03-14  Juri Linkov  <juri@jurta.org>
+
+	* finder.el (finder-compile-keywords): Replace `princ' with
+	`prin1' on a list of symbols interned from keyword strings.
+
+	* emacs-lisp/lisp-mnt.el (lm-keywords-list): If `keywords' contains
+	a comma, then split keywords using a comma and optional whitespace.
+	Otherwise, split by whitespace.
+
+	* complete.el:
+	* face-remap.el:
+	* log-view.el:
+	* net/hmac-def.el:
+	* net/hmac-md5.el:
+	* net/netrc.el:
+	* progmodes/mixal-mode.el: Fix keywords.
+
+2010-03-13  Michael Albinus  <michael.albinus@gmx.de>
+
+	* Makefile.in (ELCFILES): Add net/secrets.elc.
+
+	* net/secrets.el: New file.
+
+2010-03-12  Chong Yidong  <cyd@stupidchicken.com>
+
+	* facemenu.el (list-colors-display, list-colors-print): New arg
+	callback.  Use it to allow selecting colors.
+
+	* wid-edit.el (widget-image-insert): Insert image prop even if the
+	current display is non-graphic.
+	(widget-field-value-set): New fun.
+	(editable-field): Use it.
+	(widget-field-value-get): Clean up unused var.
+	(widget-color-value-create, widget-color--choose-action): New
+	funs.  Allow using list-colors-display to choose color.
+
+2010-03-12  Chong Yidong  <cyd@stupidchicken.com>
+
+	* cus-edit.el: Resort topmost custom groups.
+	(custom-buffer-sort-alphabetically): Default to t.
+	(customize-apropos): Use apropos-parse-pattern.
+	(custom-search-field): New var.
+	(custom-buffer-create-internal): Add custom-apropos search field.
+	(custom-add-parent-links): Don't display parent doc.
+	(custom-group-value-create): Don't sort top-level custom group.
+	(custom-magic-value-create): Show visibility button before option
+	name.
+
+	(custom-variable-state): New fun, from custom-variable-state-set.
+	(custom-variable-state-set): Use it.
+	(custom-group-value-create): Hide options with standard values
+	using the :hidden-states property.  Use progress reporter.
+
+	(custom-show): Simplify.
+	(custom-visibility): Disable images by default.
+	(custom-variable): New property :hidden-states.
+	(custom-variable-value-create): Enable images for
+	custom-visibility widgets.  Use :hidden-states property to
+	determine initial visibility.
+
+	* wid-edit.el (widget-image-find): Give images center ascent.
+	(visibility): Add :on-image and :off-image properties.
+	(widget-visibility-value-create): Use them.
+
+2010-03-12  Chong Yidong  <cyd@stupidchicken.com>
+
+	* cus-edit.el (processes): Remove from development group.
+	(oop, hypermedia): Delete group.
+	(comm): Promote to top-level group.
+
+	* net/browse-url.el (browse-url):
+	* net/xesam.el (xesam):
+	* net/tramp.el (tramp):
+	* net/goto-addr.el (goto-address):
+	* net/ange-ftp.el (ange-ftp): Put in comm group.
+
+	* view.el (view): Remove from editing group.
+
+	* uniquify.el (uniquify): Put in files group.
+
+	* net/browse-url.el (browse-url):
+	* ps-print.el (postscript): Put in external group.
+
+	* cus-edit.el (outlines):
+	* textmodes/text-mode.el (text-mode-hook):
+	* textmodes/table.el (table):
+	* textmodes/picture.el (picture):
+	* outline.el (outlines): Put in wp group.
+
+	* nxml/nxml-mode.el (nxml): Remove from wp group.
+
+	* net/tramp-imap.el (tramp-imap): Put in tramp group.
+
+	* mail/metamail.el (metamail): Remove from hypermedia group.
+
+	* cus-edit.el (abbrev):
+	* whitespace.el (whitespace):
+	* vcursor.el (vcursor):
+	* reveal.el (reveal):
+	* hl-line.el (hl-line): Put in convenience group.
+
+	* epg-config.el (epg): Put in data group.
+
+	* emulation/pc-select.el (pc-select): Put in emulations group.
+
+	* calculator.el (calculator): Put in applications group.
+
+2010-03-12  Dan Nicolaescu  <dann@ics.uci.edu>
+
+	Add .dir-locals.el support for file-less buffers.
+	* files.el (hack-local-variables): Split out code to apply local
+	variable settings ...
+	(hack-local-variables-apply): ... here.  New function.
+	(hack-dir-local-variables): Use the default directory for when the
+	buffer does not have an associated file.
+	(hack-dir-local-variables-non-file-buffer): New function.
+	* diff-mode.el (diff-mode):
+	* vc-annotate.el (vc-annotate-mode):
+	* vc-dir.el (vc-dir-mode):
+	* log-edit.el (log-edit-mode):
+	* log-view.el (log-view-mode): Call hack-dir-local-variables-non-file-buffer.
+
+2010-03-12  Dan Nicolaescu  <dann@ics.uci.edu>
+
+	Add support for shelving snapshots and for showing shelves.
+	* vc-bzr.el (vc-bzr-shelve-show, vc-bzr-shelve-show-at-point)
+	(vc-bzr-shelve-apply-and-keep-at-point, vc-bzr-shelve-snapshot):
+	New functions.
+	(vc-bzr-shelve-map, vc-bzr-shelve-menu-map)
+	(vc-bzr-extra-menu-map): Map them.
+
+2010-03-11  Glenn Morris  <rgm@gnu.org>
+
+	* cus-edit.el (customize-changed-options-previous-release):
+	Bump to 23.1.
+
+	* image.el (image-animate-max-time): Fix :version tag.
+
+2010-03-10  Chong Yidong  <cyd@stupidchicken.com>
+
+	* Branch for 23.2.
+
+2010-03-10  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	* vc-git.el (vc-git-revision-table): Include remote branches.
+
+2010-03-10  Kim F. Storm  <storm@cua.dk>
+
+	Animated image API.
+	http://lists.gnu.org/archive/html/emacs-devel/2010-03/msg00211.html
+
+	* image.el (image-animate-max-time): New defcustom.
+	(image-animated-types): New defconst.
+	(create-animated-image, image-animate-timer)
+	(image-animate-start, image-animate-stop, image-animate-timeout)
+	(image-animated-p): New functions.
+
+	* image-mode.el (image-toggle-display-image):
+	Replace `create-image' with `create-animated-image'.
+
+2010-03-09  Miles Bader  <Miles Bader <miles@gnu.org>>
+
+	* vc-git.el (vc-git-print-log): Use "tformat:" for shortlog,
+	instead of "format:"; this ensures that the output is
+	newline-terminated.
+
+2010-03-08  Chong Yidong  <cyd@stupidchicken.com>
+
+	* mail/rfc822.el (rfc822-addresses): Use nested catches to ensure
+	that all errors are caught, and that the return value is always a
+	list (Bug#5692).
+
+2010-03-08  Kenichi Handa  <handa@m17n.org>
+
+	* language/misc-lang.el (windows-1256): New coding system.
+	(cp1256): New alias of windows-1256 (bug#5690).
+
+2010-03-07  Andreas Schwab  <schwab@linux-m68k.org>
+
+	* mail/rfc822.el (rfc822-addresses): Move catch clause down around
+	call to rfc822-bad-address.  (Bug#5692)
+
+2010-03-07  Štěpán Němec  <stepnem@gmail.com>  (tiny change)
+
+	* vc-git.el (vc-git-annotate-extract-revision-at-line): Use
+	vc-git-root as default directory for revision path (Bug#5657).
+
+2010-03-06  Chong Yidong  <cyd@stupidchicken.com>
+
+	* calculator.el (calculator): Don't bind split-window-keep-point
+	(Bug#5674).
+
+2010-03-06  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	* vc-git.el: Re-flow to fit into 80 columns.
+	(vc-git-after-dir-status-stage, vc-git-dir-status-goto-stage):
+	Remove spurious `quote' element in each case alternative.
+	(vc-git-show-log-entry): Use prog1.
+	(vc-git-after-dir-status-stage): Remove unused var `remaining'.
+
+2010-03-06  Glenn Morris  <rgm@gnu.org>
+
+	* cedet/semantic/grammar.el (semantic-grammar-header-template):
+	Update template copyright to GPLv3+.
+
+2010-03-05  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	* man.el (Man-files-regexp): Tighten up the regexp (bug#5686).
+
+2010-03-03  Chong Yidong  <cyd@stupidchicken.com>
+
+	* macros.el (insert-kbd-macro): Look up keyboard macro using the
+	definition, not the name (Bug#5481).
+
+2010-03-03  Štěpán Němec  <stepnem@gmail.com>  (tiny change)
+
+	* subr.el (momentary-string-display): Don't overwrite the MESSAGE
+	argument with a local variable.  (Bug#5670)
+
+2010-03-02  Juri Linkov  <juri@jurta.org>
+
+	* info.el (Info-index-next): Decrement line number by 2.  (Bug#5652)
+
+2010-03-02  Michael Albinus  <michael.albinus@gmx.de>
+
+	* net/tramp.el (tramp-do-copy-or-rename-file-out-of-band): Fix an
+	error when FILENAME and NEWNAME are existing remote directories.
+
+	* net/tramp-compat.el (tramp-compat-make-temp-file): Add optional
+	parameter DIR-FLAG.
+
+2010-03-02  Glenn Morris  <rgm@gnu.org>
+
+	* calendar/cal-hebrew.el (holiday-hebrew-passover): Fix date
+	of Yom HaAtzma'ut when it falls on a Monday (rule changed in 2004).
+
+2010-03-01  Alan Mackenzie  <acm@muc.de>
+
+	* progmodes/cc-engine.el (c-remove-stale-state-cache):
+	Correct previous patch.
+
+2010-03-01  Kenichi Handa  <handa@m17n.org>
+
+	* language/burmese.el (burmese-composable-pattern): Rename from
+	myanmar-composable-pattern.
+
+	* international/characters.el (script-list):
+	* international/fontset.el (script-representative-chars):
+	Change myanmar to burmese.
+	(otf-script-alist): Likewise.
+	(setup-default-fontset): Likewise.  Re-fix :otf spec.
+
+2010-03-01  Alan Mackenzie  <bug-cc-mode@gnu.org>
+
+	* cc-engine.el (c-remove-stale-state-cache): Take account of when
+	`good-pos' is in the same macro as `here'.  Fixes bug#5649.
+
+2010-02-28  Katsumi Yamaoka  <yamaoka@jpl.org>
+
+	* menu-bar.el (menu-bar-manuals-menu): Fix typo.
+
+2010-02-28  Jan Djärv  <jan.h.d@swipnet.se>
+
+	* scroll-bar.el (scroll-bar-drag-1): Add save-excursion, bug #5654.
+
+2010-02-28  Michael Albinus  <michael.albinus@gmx.de>
+
+	* net/tramp.el (tramp-handle-write-region): START can be a string.
+	Take care in the checks.  Reported by Dan Davison
+	<davison@stats.ox.ac.uk>.
+
+2010-02-28  Michael Albinus  <michael.albinus@gmx.de>
+
+	* net/dbus.el (dbus-introspect, dbus-get-property)
+	(dbus-set-property, dbus-get-all-properties): Use
+	`dbus-call-method' when noninteractive.  (Bug#5645)
+
+2010-02-28  Chong Yidong  <cyd@stupidchicken.com>
+
+	* textmodes/reftex-toc.el (reftex-toc-promote-prepare):
+	* emacs-lisp/elint.el (elint-add-required-env):
+	* cedet/semantic/db-find.el
+	(semanticdb-find-translate-path-brutish-default):
+	* cedet/ede/make.el (ede-make-check-version):
+	* calendar/icalendar.el (icalendar--add-diary-entry):
+	* calc/calcalg2.el (math-tracing-integral):
+	* files.el (recover-session-finish): Use with-current-buffer
+	instead of save-excursion.
+
+2010-02-27  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	Fix in-buffer completion when after-change-functions modify the buffer.
+	* minibuffer.el (completion--replace): New function.
+	(completion--do-completion): Use it and use relative movement.
+
+2010-02-27  Chong Yidong  <cyd@stupidchicken.com>
+
+	* international/fontset.el (setup-default-fontset): Fix :otf spec.
+
+2010-02-27  Jeremy Whitlock  <jcscoobyrs@gmail.com>  (tiny change)
+
+	* progmodes/python.el (python-pdbtrack-stack-entry-regexp):
+	Allow the characters _<> in the stack entry (Bug#5653).
+
+2010-02-26  Kenichi Handa  <handa@m17n.org>
+
+	* language/burmese.el: Fix entries in composition-function-table.
+	(myanmar-composable-pattern): New variable.
+
+	* international/fontset.el (setup-default-fontset): Add an entry
+	for myanmar.
+
+	* international/characters.el (script-list): Add Myanmar
+	Extended-A.
+
+2010-02-26  Glenn Morris  <rgm@gnu.org>
+
+	* custom.el (custom-initialize-delay): Doc fix.
+
+	* mail/sendmail.el (send-mail-function): Autoload the call
+	to custom-initialize-delay, not otherwise preserved in loaddefs.el.
+
+2010-02-25  Alan Mackenzie  <acm@muc.de>
+
+	* progmodes/cc-engine.el (c-clear-<-pair-props)
+	(c-clear->-pair-props): Correct to wipe category text props, not
+	syntax-table ones.
+
+	* progmodes/cc-mode.el (c-after-change): Remove any hard
+	syntax-table properties for <, > which, e.g., C-y has
+	inopportunely converted from category properties.
+
+2010-02-24  Chong Yidong  <cyd@stupidchicken.com>
+
+	* files.el (hack-local-variables-filter): For eval forms, also
+	check safe-local-variable-p (Bug#5636).
+
+2010-02-24  Eduard Wiebe  <usenet@pusto.de>
+
+	* javascript.el (wisent-javascript-jv-expand-tag): Avoid c(ad)ddr
+	and use c(ad)r of cddr (Bug#5640).
+
 2010-02-22  Michael Albinus  <michael.albinus@gmx.de>
 
 	* net/tramp.el (tramp-do-copy-or-rename-file-out-of-band): Protect
@@ -20,8 +497,8 @@
 
 2010-02-20  Kevin Ryde  <user42@zip.com.au>
 
-	* progmodes/compile.el (compilation-error-regexp-alist-alist): In
-	`watcom' anchor regexp to start of line, to avoid slowness
+	* progmodes/compile.el (compilation-error-regexp-alist-alist):
+	In `watcom' anchor regexp to start of line, to avoid slowness
 	(Bug#5599).
 
 2010-02-20  Eli Zaretskii  <eliz@gnu.org>
@@ -86,9 +563,9 @@
 
 2010-02-17  Mark A. Hershberger  <mah@everybody.org>
 
-	* vc-bzr.el: fix typo in Known Bugs section.
+	* vc-bzr.el: Fix typo in Known Bugs section.
 
-	* isearch.el (isearch-update-post-hook): New hook
+	* isearch.el (isearch-update-post-hook): New hook.
 	(isearch-update): Use the new hook.
 
 2010-02-16  Michael Albinus  <michael.albinus@gmx.de>

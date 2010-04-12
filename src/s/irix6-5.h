@@ -82,6 +82,8 @@ char *_getpty();
 /* Tell process_send_signal to use VSUSP instead of VSWTCH.  */
 #define PREFER_VSUSP
 
+#define UNEXEC unexelf.o
+
 /* define MAIL_USE_FLOCK if the mailer uses flock
    to interlock access to /usr/spool/mail/$USER.
    The alternative is that a lock file named
@@ -100,19 +102,6 @@ char *_getpty();
 #if _MIPS_SZLONG == 64		/* -mabi=64 (gcc) or -64 (MIPSpro) */
 #define _LP64			/* lisp.h takes care of the rest */
 #endif /* _MIPS_SZLONG */
-
-/* The only supported 32-bit configuration of GCC under IRIX6.x produces
-   n32 MIPS ABI binaries and also supports -g. */
-#ifdef __GNUC__
-#define C_DEBUG_SWITCH -g
-#else
-/* Optimize, inaccurate debugging, increase limit on size of what's
-   optimized.
-
-   This should also be applicable other than on Irix 6.5, but I don't
-   know for which compiler versions.  -- fx */
-#define C_DEBUG_SWITCH -g3 -O -OPT:Olimit=3500
-#endif
 
 #undef SA_RESTART
 

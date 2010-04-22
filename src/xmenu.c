@@ -954,6 +954,19 @@ update_frame_menubar (f)
 
 #ifdef USE_LUCID
 static void
+apply_systemfont_to_dialog (w)
+     Widget w;
+{
+  const char *fn = xsettings_get_system_normal_font ();
+  if (fn) 
+    {
+      XrmDatabase db = XtDatabase (XtDisplay (w));
+      if (db)
+        XrmPutStringResource (&db, "*dialog.faceName", fn);
+    }
+}
+
+static void
 apply_systemfont_to_menu (w)
      Widget w;
 {
@@ -964,15 +977,10 @@ apply_systemfont_to_menu (w)
 
   if (XtIsShell (w)) /* popup menu */
     {
-      Widget *childs[1];
-      int num = 0;
+      Widget *childs = NULL;
 
-      XtVaGetValues (w, XtNnumChildren, &num, NULL);
-      if (num != 1) return; /* Should only be one. */
-
-      childs[0] = 0;
-      XtVaGetValues (w, XtNchildren, childs, NULL);
-      if (childs[0] && *childs[0]) w = *childs[0];
+      XtVaGetValues (w, XtNchildren, &childs, NULL);
+      if (*childs) w = *childs;
     }
 
   /* Only use system font if the default is used for the menu.  */
@@ -2047,11 +2055,13 @@ create_and_show_dialog (f, first_wv)
     abort();
 
   dialog_id = widget_id_tick++;
+#ifdef HAVE_XFT
+  apply_systemfont_to_dialog (f->output_data.x->widget);
+#endif
   lw_create_widget (first_wv->name, "dialog", dialog_id, first_wv,
                     f->output_data.x->widget, 1, 0,
                     dialog_selection_callback, 0, 0);
   lw_modify_all_widgets (dialog_id, first_wv->contents, True);
-
   /* Display the dialog box.  */
   lw_pop_up_all_widgets (dialog_id);
   popup_activated_flag = 1;
